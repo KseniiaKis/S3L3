@@ -1,137 +1,109 @@
-#include <gtest.h>
+#include <../gtest/gtest.h>
 #include "Stack.h"
 #include "Stack.cpp"
 
-TEST(TStack, can_create_stack_with_positive_length) //Создание положительного
+TEST(TStack, can_create_stack_with_positive_length)
 {
-	ASSERT_NO_THROW(TStack<int> S_INT(5));
-	ASSERT_NO_THROW(TStack<char> S_CHAR(5));
+  ASSERT_NO_THROW(TStack<int> s(5));
 }
 
-TEST(TStack, throws_when_create_stack_with_negative_length) //Ошибка при создании отрицательного
+TEST(TStack, throws_when_create_stack_with_negative_length)
 {
-	ASSERT_ANY_THROW(TStack<int> S_INT(-5));
-	ASSERT_ANY_THROW(TStack<char> S_CHAR(-5));
+  ASSERT_ANY_THROW(TStack<int> s(0));
 }
 
-TEST(TStack, can_set_elem) //Добавление элемента
+TEST(TStack, can_create_copied_stack)
 {
-	TStack<int> S(5);
-	ASSERT_NO_THROW(S.Push(1));
+  TStack<int> s(5);
+
+  ASSERT_NO_THROW(TStack<int> s1(s));
 }
 
-TEST(TStack, can_get_size) //Получить размер
+TEST(TStack, copied_stack_is_equal_to_source_one)
 {
-	TStack<int> S(5);
-	EXPECT_EQ(S.GetSize(), 5);
+  TStack<int> s(5);
+  TStack<int> s1(s);
+  EXPECT_EQ(s, s1);
 }
 
-TEST(TStack, Is_Overflown) //контроль переполнения
+TEST(TStack, can_get_size)
 {
-	TStack<int> S(4);
-
-	S.Push(1);
-	S.Push(2);
-	S.Push(3);
-	S.Push(4);
-
-	ASSERT_NO_THROW();
+  TStack<int> s(5);
+  size_t l = 5;
+  EXPECT_EQ(l, s.GetSize());
 }
 
-TEST(TStack, IS_Empty) //контроль пустоты
+TEST(TStack, can_get_start)
 {
-	TStack<int> S(4);
-
-	S.Push(1);
-	S.Push(2);
-	S.Push(3);
-	S.Push(4);
-
-	ASSERT_NO_THROW();
+  TStack<int> s(5);
+  size_t st = 0;
+  EXPECT_EQ(st, s.GetStart());
 }
 
-
-TEST(TStack, can_clear_bit) //Удалить элемент
+TEST(TStack, can_set_and_get_element)
 {
-	TStack<int> S(4);
+  TStack<int> s(2);
+  s.Push(1);
 
-	S.Push(0);
-	S.Push(1);
-	S.Push(2);
-	S.Push(3);
-
-	ASSERT_NO_THROW(S.Top());
+  EXPECT_EQ(1, s.Top());
 }
 
-
-TEST(TStack, get_elem) //Получить элемент
+TEST(TStack, assign_operator_change_stack_size)
 {
-	TStack<int> S(2);
-
-	S.Push(0);
-	S.Push(2);
-
-	EXPECT_EQ(S.Peek(1), 2);
+  TStack<int> s(1);
+  TStack<int> s1(4);
+  s = s1;
+  size_t l = 4;
+  EXPECT_EQ(l, s.GetSize());
 }
 
-
-TEST(TStack, can_create_copy) //Копирование
+TEST(TStack, is_created_stack_full)
 {
-	TStack<int> S1(5);
-	S1.Push(1);
-	TStack<int> S2 = S1;
-
-	EXPECT_EQ(S1.Peek(1), S2.Peek(1));
+  TStack<int> s(1);
+  EXPECT_EQ(false, s.IsFull());
 }
 
-TEST(TStack, throws_when_set_stack_with_too_large_index) //Ошибка, при добавлении лишнего элемента
+TEST(TStack, is_created_stack_empty)
 {
-	TStack<int> S(2);
-
-	S.Push(1);
-	S.Push(2);
-
-	ASSERT_ANY_THROW(S.Push(3));
+  TStack<int> s(1);
+  EXPECT_EQ(true, s.IsEmpty());
 }
 
-TEST(TStack, can_get_pointer) //Получить указатель
+TEST(TStack, top_dont_delete_element)
 {
-	TStack<int> S(2);
+  TStack<int> s(2);
+  s.Push(1);
+  int a = s.Top();
 
-	S.Push(1);
-	S.Push(2);
-
-	ASSERT_NO_THROW(S.getPtr());
+  EXPECT_EQ(1, s.Top());
 }
 
-TEST(TStack, can_get_num) //Получить номер текущего элемента
+TEST(TStack, pop_delete_element)
 {
-	TStack<int> S(2);
-
-	S.Push(1);
-	S.Push(2);
-
-	EXPECT_EQ(S.getNum(), 2);
+  TStack<int> s(2);
+  s.Push(1);
+  s.Pop();
+  size_t st = 0;
+  EXPECT_EQ(st, s.GetStart());
 }
 
-TEST(TStack, can_get_MIN_elem) //Поиск минимального элемента
+TEST(TStack, pop_throw_when_empty)
 {
-	TStack<int> S(3);
-
-	S.Push(2);
-	S.Push(4);
-	S.Push(6);
-
-	EXPECT_EQ(S.min_elem(), 2);
+  TStack<int> s(2);
+  ASSERT_ANY_THROW(s.Pop());
 }
 
-TEST(TStack, can_get_MAX_elem) //Поискмаксимального элемента
+TEST(TStack, top_throw_when_empty)
 {
-	TStack<int> S(3);
+  TStack<int> s(2);
+  ASSERT_ANY_THROW(s.Top());
+}
 
-	S.Push(2);
-	S.Push(4);
-	S.Push(6);
-
-	EXPECT_EQ(S.max_elem(), 6);
+TEST(TStack, push_change_size)
+{
+  TStack<int> s(1);
+  s.Push(1);
+  s.Push(2);
+  size_t l = 2;
+  EXPECT_EQ(l, s.GetSize());
 }
